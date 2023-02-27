@@ -9,6 +9,18 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType(JavaExec).configureEach {
+    jvmArgs("--enable-preview")
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs("--enable-preview")
+}
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
