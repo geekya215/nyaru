@@ -3,31 +3,23 @@ package io.geekya215.nyaru;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-public class Handler implements Runnable {
+public class Processor {
     private final SocketChannel socket;
     private final SelectionKey key;
-
     private final ByteBuffer inputBuffer = ByteBuffer.allocate(32);
     private final ByteBuffer outputBuffer = ByteBuffer.allocate(32);
 
     private final int READING = 0, WRITING = 1;
     private int state = READING;
 
-    public Handler(Selector selector, SocketChannel socket) throws IOException {
+    public Processor(SocketChannel socket, SelectionKey key) {
         this.socket = socket;
-        this.socket.configureBlocking(false);
-
-        key = this.socket.register(selector, 0);
-        key.attach(this);
-        key.interestOps(SelectionKey.OP_READ);
-        selector.wakeup();
+        this.key = key;
     }
 
-    @Override
-    public void run() {
+    public void handle() {
         try {
             if (state == READING) read();
             else if (state == WRITING) write();
